@@ -1,25 +1,53 @@
 import logo from './logo.svg';
-import './App.css';
 
-function App() {
+import React from 'react';
+import Count from './components/Count';
+import Button from './components/Button';
+
+import { BrowserRouter, Route, Link, Router } from 'react-router-dom';
+
+import Home from 'view/home.js';
+import Test from 'view/test.js';
+
+import { connect } from 'react-redux';
+import { actionIncrement, actionDecrement } from './redux/actions';
+
+const  App = (props) => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{textAlign: 'center'}}>
+
+      <BrowserRouter>
+        <Route path="/home" component={Home} />
+        <Route path="/test" component={Test} />
+
+        <div>
+          <Link to="/home">HOME</Link> &nbsp;
+          <Link to="/test">TEST</Link>
+      </div>
+
+      </BrowserRouter>
+
+
+
+
+      <Count value = {props.value} />
+      <Button onClickIncrease={props.onClickIncrease}
+              onClickDecrease={props.onClickDecrease}/>
     </div>
   );
 }
 
-export default App;
+
+const mapStateToProps = (state) => {
+  return {
+    value: state.reducerCount.value,
+  }
+}
+
+const mapDispatchToProps = (dispatch) => ({
+  onClickIncrease: () => { dispatch(actionIncrement())},
+  onClickDecrease: () => { dispatch(actionDecrement())}
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
